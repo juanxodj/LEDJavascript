@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ArduinoJS</title>
+    <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+    <link rel="stylesheet" type="text/css" href="resources/tutorial/css/example.css">
+
+    <script>
+        var app = new Firebase('https://arduinojs-f5662.firebaseio.com/ardx/');
+        var lightOn = '<img src="led_on.png" title="Light On" width="24">';
+        var lightOff = '<img src="led_off.png" title="Light Off" width="24">';
+        var lightToggle = '<img src="https://maxcdn.icons8.com/Color/PNG/24/Household/candle_bulb-24.png" title="Candle Bulb" width="24">';
+    </script>
+</head>
+<body>
+<!-- CHAT MARKUP -->
+<div>
+    Estado de luces:
+    <li>
+        LED 1: <span id="light_state_1">Đang xác định...</span>
+        <input id="cb_led_1" type="checkbox" onclick="toggleLed(this,'led1');">
+    </li>
+    <li>
+        LED 2: <span id="light_state_2">Đang xác định...</span>
+        <input id="cb_led_2" type="checkbox" onclick="toggleLed(this,'led2');">
+    </li>
+    <li>
+        LED 3: <span id="light_state_3">Đang xác định...</span>
+        <input id="cb_led_3" type="checkbox" onclick="toggleLed(this,'led3');">
+    </li>
+</div>
+
+<!-- CHAT JAVACRIPT -->
+<script>
+    // check box change event
+    var toggleLed = function(checkboz, led){
+        switch (led){
+            case 'led1':
+                app.update({'led1':checkboz.checked?1:0});
+                break;
+            case 'led2':
+                app.update({'led2':checkboz.checked?1:0});
+                break;
+            case 'led3':
+                app.update({'led3':checkboz.checked?1:0});
+                break;
+        }
+    };
+    // firebase data change event
+    app.on('value', function(snapshot){
+        var value = snapshot.val(); // is on or off
+        var msgElem1 = document.getElementById("light_state_1");
+        var msgElem2 = document.getElementById("light_state_2");
+        var msgElem3 = document.getElementById("light_state_3");
+        var cbLed1 = document.getElementById('cb_led_1');
+        var cbLed2 = document.getElementById('cb_led_2');
+        var cbLed3 = document.getElementById('cb_led_3');
+        cbLed1.checked = value.led1 != 0;
+        cbLed2.checked = value.led2 != 0;
+        cbLed3.checked = value.led3 != 0;
+        msgElem1.innerHTML = value.led1 == 0 ? lightOff : lightOn;
+        msgElem2.innerHTML = value.led2 == 0 ? lightOff : lightOn;
+        msgElem3.innerHTML = value.led3 == 0 ? lightOff : lightOn;
+    });
+</script>
+</body>
+</html>
